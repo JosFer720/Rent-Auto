@@ -6,6 +6,7 @@ import Dashboard from './pages/Dashboard-clients';
 import Register from './pages/Register'
 import Autos from './pages/Autos'
 import MisReservas from './pages/MisReservas';
+import Perfil from './pages/Perfil';
 
 function AppRoutes() {
   const location = useLocation();
@@ -22,6 +23,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/autos" element={<Autos />} />
         <Route path="/mis-reservas" element={<MisReservas/>}/>
+        <Route path="/perfil" element={<Perfil/>}/>
       </Routes>
     </>
   );

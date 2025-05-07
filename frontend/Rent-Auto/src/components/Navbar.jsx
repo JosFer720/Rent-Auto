@@ -10,7 +10,7 @@ export default function Navbar() {
         <li><Link to="/dashboard">Principal</Link></li>
         <li><Link to="/autos">Autos</Link></li>
         <li><Link to="/perfil">Perfil</Link></li>
-        <li><Link to="/logout">Salir</Link></li>
+        <li><Link to="/">Salir</Link></li>
       </ul>
     </nav>
   );

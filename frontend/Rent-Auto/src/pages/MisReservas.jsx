@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from './Autos.module.css'; // Usa los mismos estilos base
+import styles from './MisReservas.module.css';
 
 export default function MisReservas() {
   const reservas = [
@@ -20,11 +20,11 @@ export default function MisReservas() {
   ];
 
   return (
-    <div className={styles.autosContainer}>
-      <h1 className={styles.autosTitle}>Mis Reservas</h1>
-      <section className={styles.reservasLista}>
+    <div className={styles.container}>
+      <h1 className={styles.title}>Mis Reservas</h1>
+      <section className={styles.lista}>
         {reservas.map((reserva, index) => (
-          <div key={index} className={styles.reservaCard}>
+          <div key={index} className={styles.card}>
             <h3>{reserva.vehiculo}</h3>
             <p>Inicio: {reserva.fechaInicio}</p>
             <p>Fin: {reserva.fechaFin}</p>
