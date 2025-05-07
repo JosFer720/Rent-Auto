@@ -1,7 +1,7 @@
 services:
   frontend:
     build:
-      context: ./frontend
+      context: ./frontend/Rent-Auto
       dockerfile: Dockerfile
     ports:
       - "80:80"
