@@ -1,8 +1,31 @@
-import React from "react";
-import Login from "./pages/Login";
+// App.jsx
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Navbar from './components/Navbar';
+import Login from './pages/Login';
+import Dashboard from './pages/Dashboard-clients';
 
-function App() {
-  return <Login />;
+function AppRoutes() {
+  const location = useLocation();
+  const rutasSinNavbar = ['/', '/login'];
+
+  const mostrarNavbar = !rutasSinNavbar.includes(location.pathname);
+
+  return (
+    <>
+      {mostrarNavbar && <Navbar />}
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+      </Routes>
+    </>
+  );
 }
 
-export default App;
+export default function App() {
+  return (
+    <Router>
+      <AppRoutes />
+    </Router>
+  );
+}
