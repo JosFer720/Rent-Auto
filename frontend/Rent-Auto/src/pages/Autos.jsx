@@ -15,27 +15,47 @@ export default function Autos() {
           <input type="text" placeholder='Buscar'/>
         </div>
         <div className={styles.filtros}>
-            <button className={styles.filtro}>SUV</button>
-            <button className={styles.filtro}>SEDAN</button>
-            <button className={styles.filtro}>CAMIONETA</button>
-        </div>
-        <div className={styles.carList}>
+        <button className={styles.filtro}>SUV</button>
+        <button className={styles.filtro}>SEDAN</button>
+        <button className={styles.filtro}>CAMIONETA</button>
+        <button className={styles.filtro}>Reservar</button>
+      </div>
+
+      <div className={styles.carList}>
         <div className={styles.carCard}>
           <h3>Toyota Corolla</h3>
           <p>Categoría: Sedán</p>
+          <p>Año: 2020</p>
+          <p>Estado: Disponible</p>
           <p>Precio: 45/día</p>
+          <button className={styles.filtro}>Reservar</button>
         </div>
 
         <div className={styles.carCard}>
           <h3>Ford EcoSport</h3>
           <p>Categoría: SUV</p>
+          <p>Año: 2019</p>
+          <p>Estado: Disponible</p>
           <p>Precio: 60/día</p>
+          <button className={styles.filtro}>Reservar</button>
         </div>
 
         <div className={styles.carCard}>
           <h3>Chevrolet Spark</h3>
           <p>Categoría: Económico</p>
-          <p>Precio:    35/día</p>
+          <p>Año: 2018</p>
+          <p>Estado: Disponible</p>
+          <p>Precio: 35/día</p>
+          <button className={styles.filtro}>Reservar</button>
+        </div>
+
+        <div className={styles.carCard}>
+          <h3>Nissan Model X</h3>
+          <p>Categoría: Desconocida</p>
+          <p>Año: 2013</p>
+          <p>Estado: Mantenimiento</p>
+          <p>Precio: 123.95/día</p>
+          <button className={styles.filtro}>Reservar</button>
         </div>
       </div>
       </section>

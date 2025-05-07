@@ -7,6 +7,7 @@ export default function Navbar() {
     <nav className="navbar">
       <div className="logo">Rent Auto</div>
       <ul className="nav-links">
+        <li><Link to="/dashboard">Principal</Link></li>
         <li><Link to="/autos">Autos</Link></li>
         <li><Link to="/perfil">Perfil</Link></li>
         <li><Link to="/logout">Salir</Link></li>

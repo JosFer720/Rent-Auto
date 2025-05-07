@@ -76,3 +76,31 @@
     color: #748488;
   }
   
+  .reservasLista {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+  }
+  
+  .reservaCard {
+    background-color: #ebe4db;
+    padding: 1rem;
+    border-radius: 10px;
+    width: 90%;
+    max-width: 400px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    text-align: left;
+  }
+  
+  .reservaCard h3 {
+    margin-bottom: 0.5rem;
+    color: #0e3f41;
+  }
+  
+  .reservaCard p {
+    margin: 0.3rem 0;
+    color: #748488;
+  }
+  
