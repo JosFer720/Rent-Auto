@@ -18,7 +18,10 @@ export default function Autos() {
         <button className={styles.filtro}>SUV</button>
         <button className={styles.filtro}>SEDAN</button>
         <button className={styles.filtro}>CAMIONETA</button>
-        <button className={styles.filtro}>Reservar</button>
+        <button className={styles.filtro}>ECONÓMICO</button>
+        <button className={styles.filtro}>DEPORTIVO</button>
+        <button className={styles.filtro}>FAMILIAR</button>
+        <button className={styles.filtro}>ELÉCTRICO</button>
       </div>
 
       <div className={styles.carList}>

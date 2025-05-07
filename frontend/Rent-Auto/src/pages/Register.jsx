@@ -27,7 +27,7 @@ export default function Login() {
           id="contraseña"
           name="contraseña"
         />
-        <button type="submit" className={styles.loginButton}>Registrate</button>
+        <button type="submit" className={styles.loginButton} onClick={() => window.location.href = '/dashboard'}>Registrate</button>
       </form>
     </div>
   );

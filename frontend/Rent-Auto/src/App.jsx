@@ -7,10 +7,11 @@ import Register from './pages/Register'
 import Autos from './pages/Autos'
 import MisReservas from './pages/MisReservas';
 import Perfil from './pages/Perfil';
+import Pagos from './pages/Pagos';
 
 function AppRoutes() {
   const location = useLocation();
-  const rutasSinNavbar = ['/', '/login', '/register'];
+  const rutasSinNavbar = ['/', '/login', '/registrar'];
 
   const mostrarNavbar = !rutasSinNavbar.includes(location.pathname);
 
@@ -19,11 +20,12 @@ function AppRoutes() {
       {mostrarNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/registrar" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/autos" element={<Autos />} />
         <Route path="/mis-reservas" element={<MisReservas/>}/>
         <Route path="/perfil" element={<Perfil/>}/>
+        <Route path="/pagos" element={<Pagos/>}/>
       </Routes>
     </>
   );
