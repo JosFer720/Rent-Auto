@@ -1,9 +1,9 @@
-// App.jsx
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard-clients';
+import Register from './pages/Register'
 
 function AppRoutes() {
   const location = useLocation();
@@ -16,6 +16,7 @@ function AppRoutes() {
       {mostrarNavbar && <Navbar />}
       <Routes>
         <Route path="/" element={<Login />} />
+        <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
       </Routes>
     </>

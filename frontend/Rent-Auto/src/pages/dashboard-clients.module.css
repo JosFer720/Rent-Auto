@@ -1,62 +1,68 @@
-/* login.module.css */
+.dashboardContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #d3d4ce;
+  height: 100vh;
+  width: 100vw;
+}
 
-.Container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    width: 100vw;
-    background-color: #d3d4ce;
-  }
-  
-  img{
-    max-width: 30vw;
-    max-height: 30vh;
-  }
-  
-  .loginForm {
-    display: flex;
-    flex-direction: column;
-    padding: 2rem;
-    border-radius: 10px;
-    background-color: #ebe4db;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    min-width: 300px;
-  }
-  
-  h1{
-    font-size: 0.5rem;
-    color: black;
-    text-align: center;
-    margin-bottom: 0.5rem;
-    margin-top: 0;
-  }
-  
-  h2{
-    color: black;
-    text-align: center;
-    margin-top: 0;
-    margin-bottom: 1.5;
-  }
-  .loginForm input {
-    margin-bottom: 1rem;
-    padding: 0.8rem;
-    font-size: 1rem;
-    background-color:#b6c4bc ;
-    border-color:  #748c84;
-  }
-  
-  .loginForm button {
-    padding: 0.8rem;
-    background-color: #0e3f41;
-    color: white;
-    border: none;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .error {
-    color: red;
-    margin-bottom: 1rem;
-  }
-  
+.dashboardTitle {
+  font-size: 2.5rem;
+  color: #0e3f41;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.dashboardResumen {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+}
+
+.dashboardCard {
+  background-color: #ebe4db;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  width: 240px;
+  text-align: center;
+  border-left: 5px solid #0e3f41;
+}
+
+.dashboardCard h2 {
+  color: #748488;
+  margin-bottom: 0.5rem;
+}
+
+.dashboardCard p {
+  font-size: 1.2rem;
+  color: #0e3f41;
+}
+
+.dashboardAcciones {
+  text-align: center;
+}
+
+.dashboardAcciones h2 {
+  color: #748c84;
+  margin-bottom: 1rem;
+}
+
+.dashboardButton {
+  margin: 0.5rem;
+  padding: 0.8rem 1.2rem;
+  background-color: #0e3f41;
+  color: white;
+  border: none;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.dashboardButton:hover {
+  background-color: #15595c;
+}

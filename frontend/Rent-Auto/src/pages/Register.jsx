@@ -8,19 +8,17 @@ export default function Login() {
       <form className={styles.loginForm}>
         <img src={logo} alt="logo empresa" className={styles.loginLogo} />
         <h1 className={styles.loginTitle}>Rent Auto</h1>
-        <h2 className={styles.loginSubtitle}>Iniciar Sesión</h2>
 
-        <label for="email" className={styles.labelLogin}>Ingresa tu Correo</label>
+        <label for="email" className={styles.labelLogin}>Ingresa tu Email</label>
         <input
           type="email"
-          placeholder="Correo"
+          placeholder="Correo@fake.com"
           required
           className={styles.loginInput}
           id="email"
           name="email"
         />
-
-      <label for="contraseña" className={styles.labelLogin}>Ingresa tu Contraseña</label>  
+        <label for="email" className={styles.labelLogin}>Ingresa tu Contraseña</label>
         <input
           type="password"
           placeholder="Contraseña"
@@ -29,8 +27,7 @@ export default function Login() {
           id="contraseña"
           name="contraseña"
         />
-        <button type="submit" className={styles.loginButton}>Entrar</button>
-        <a href="#" className={styles.registrar}>Registrate</a>
+        <button type="submit" className={styles.loginButton}>Registrate</button>
       </form>
     </div>
   );

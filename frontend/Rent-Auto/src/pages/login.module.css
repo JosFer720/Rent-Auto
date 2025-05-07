@@ -1,5 +1,3 @@
-/* login.module.css */
-
 .loginContainer {
   display: flex;
   justify-content: center;
@@ -9,9 +7,11 @@
   background-color: #d3d4ce;
 }
 
-img{
+.loginLogo {
   max-width: 30vw;
   max-height: 30vh;
+  margin: 0 auto 1rem;
+  display: block;
 }
 
 .loginForm {
@@ -24,38 +24,69 @@ img{
   min-width: 300px;
 }
 
-h1{
-  font-size: 0.5rem;
+.loginTitle { 
+  font-size: 2.5rem;
   color: black;
   text-align: center;
   margin-bottom: 0.5rem;
   margin-top: 0;
 }
 
-h2{
+.loginSubtitle {
+  font-size: 1.2rem;
   color: black;
   text-align: center;
   margin-top: 0;
-  margin-bottom: 1.5;
+  margin-bottom: 1.5rem;
 }
-.loginForm input {
+
+.loginInput {
   margin-bottom: 1rem;
   padding: 0.8rem;
   font-size: 1rem;
-  background-color:#b6c4bc ;
-  border-color:  #748c84;
+  background-color: #b6c4bc;
+  border: 1px solid #748c84;
+  border-radius: 5px;
 }
 
-.loginForm button {
+.loginButton {
   padding: 0.8rem;
   background-color: #0e3f41;
   color: white;
   border: none;
   font-weight: bold;
   cursor: pointer;
+  border-radius: 5px;
+}
+
+.loginButton:hover {
+  background-color: #15595c;
+}
+
+.registrar {
+  margin-top: 0.5rem;
+  text-align: center;
+  color: white;
+  background-color: green;
+  border-radius: 10px;
+  padding: 0.5rem;
+  width: 100px;
+  margin: 10px auto;
+  display: block;
+  text-decoration: none;
+}
+
+.registrar:hover {
+  background-color: #1e7e34;
+  text-decoration: none;
+  color: white;
 }
 
 .error {
   color: red;
   margin-bottom: 1rem;
+}
+
+.labelLogin{
+  color:black;
 }
