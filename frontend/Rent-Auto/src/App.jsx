@@ -4,10 +4,11 @@ import Navbar from './components/Navbar';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard-clients';
 import Register from './pages/Register'
+import Autos from './pages/Autos'
 
 function AppRoutes() {
   const location = useLocation();
-  const rutasSinNavbar = ['/', '/login'];
+  const rutasSinNavbar = ['/', '/login', '/register'];
 
   const mostrarNavbar = !rutasSinNavbar.includes(location.pathname);
 
@@ -18,6 +19,7 @@ function AppRoutes() {
         <Route path="/" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/autos" element={<Autos />} />
       </Routes>
     </>
   );
