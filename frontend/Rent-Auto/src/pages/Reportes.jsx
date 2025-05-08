@@ -10,12 +10,12 @@ export default function Reportes() {
   };
 
   const reportes = [
-    { tipo: 'reservas', icono: '📋', titulo: 'Reservas por Usuario' },
+    { tipo: 'reservas_usuario', icono: '📋', titulo: 'Reservas por Usuario' },
     { tipo: 'mantenimiento', icono: '🧰', titulo: 'Vehículos en Mantenimiento' },
-    { tipo: 'pagos', icono: '💳', titulo: 'Pagos por Método' },
+    { tipo: 'ingresos', icono: '💳', titulo: 'Pagos por Método' },
     { tipo: 'alquileres', icono: '🚗', titulo: 'Alquileres Activos' },
-    { tipo: 'ingresos', icono: '🏢', titulo: 'Ingresos por Sucursal' },
-  ];
+    { tipo: 'ingresos', icono: '🏢', titulo: 'Ingresos por Sucursal' }
+  ];  
 
   return (
     <div className={styles.autosContainer}>

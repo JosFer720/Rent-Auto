@@ -3,6 +3,8 @@
   min-height: 100vh;
   width: 100vw;
   padding-top: 1.1rem;
+  padding-right: 2.5rem;
+  box-sizing: border-box; /* Añadido para que el padding no afecte el ancho total */
 }
 
 .autosTitle {
@@ -17,6 +19,9 @@
   flex-direction: column;
   align-items: center;
   gap: 1.5rem;
+  width: 100%;
+  max-width: calc(100% - 60px); /* Añadido para dejar espacio a los lados */
+  margin: 0 auto; /* Centrado */
 }
 
 .autosBuscador input {
@@ -27,6 +32,7 @@
   border: 1px solid #748c84;
   border-radius: 5px;
   background-color: #b6c4bc;
+  color: black; /* Añadido para texto negro */
 }
 
 .filtros {
@@ -106,21 +112,76 @@
 }
 
 .tabla {
-  width: 100%;
   margin-top: 20px;
+  width: calc(100% - 60px); /* Modificado para dejar espacio a los lados */
   border-collapse: collapse;
   background-color: white;
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   color: black;
+  margin-left: auto; /* Centrado */
+  margin-right: auto; /* Centrado */
 }
 
 .tabla th, .tabla td {
-  padding: 12px;
+  padding: 14px;
   border: 1px solid #ddd;
   text-align: left;
 }
 
 .tabla th {
-  background-color: #f5f5f5;
+  background-color: #f0f4f3;
+  color: #333;
+  font-weight: bold;
+}
+
+.filtros input {
+  padding: 0.6rem;
+  border: 1px solid #aaa;
+  border-radius: 6px;
+  font-size: 1rem;
+  background-color: #f7f9f8;
+  color: black; /* Añadido para texto negro */
+}
+
+.flipCard {
+  perspective: 1000px;
+  width: 100%;
+}
+
+.flipInner {
+  position: relative;
+  width: 100%;
+  transition: transform 0.8s;
+  transform-style: preserve-3d;
+}
+
+.flipped .flipInner {
+  transform: rotateY(180deg);
+}
+
+.flipFront, .flipBack {
+  backface-visibility: hidden;
+  position: absolute;
+  width: 100%;
+  top: 0;
+  left: 0;
+}
+
+.flipBack {
+  transform: rotateY(180deg);
+  display: flex;
+  justify-content: center; 
+  align-items: center;     
+  padding: 1rem;
+}
+
+.flipBack canvas {
+  max-width: 80%;  
+  height: auto;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: brightness(0); 
 }
