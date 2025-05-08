@@ -4,7 +4,8 @@
   width: 100vw;
   padding-top: 1.1rem;
   padding-right: 2.5rem;
-  box-sizing: border-box; /* Añadido para que el padding no afecte el ancho total */
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .autosTitle {
@@ -20,8 +21,8 @@
   align-items: center;
   gap: 1.5rem;
   width: 100%;
-  max-width: calc(100% - 60px); /* Añadido para dejar espacio a los lados */
-  margin: 0 auto; /* Centrado */
+  max-width: calc(100% - 60px);
+  margin: 0 auto;
 }
 
 .autosBuscador input {
@@ -32,7 +33,7 @@
   border: 1px solid #748c84;
   border-radius: 5px;
   background-color: #b6c4bc;
-  color: black; /* Añadido para texto negro */
+  color: black;
 }
 
 .filtros {
@@ -113,15 +114,15 @@
 
 .tabla {
   margin-top: 20px;
-  width: calc(100% - 60px); /* Modificado para dejar espacio a los lados */
+  width: calc(100% - 60px);
   border-collapse: collapse;
   background-color: white;
   border-radius: 10px;
   overflow: hidden;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   color: black;
-  margin-left: auto; /* Centrado */
-  margin-right: auto; /* Centrado */
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tabla th, .tabla td {
@@ -142,7 +143,7 @@
   border-radius: 6px;
   font-size: 1rem;
   background-color: #f7f9f8;
-  color: black; /* Añadido para texto negro */
+  color: black;
 }
 
 .flipCard {
@@ -178,8 +179,8 @@
 }
 
 .flipBack canvas {
-  max-width: 80%;  
-  height: auto;
+  width: 50% !important;
+  height: auto  !important;
 }
 
 input[type="date"]::-webkit-calendar-picker-indicator {
