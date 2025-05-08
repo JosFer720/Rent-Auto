@@ -4,4 +4,4 @@ services:
       context: ./frontend/Rent-Auto
       dockerfile: Dockerfile
     ports:
-      - "80:80"
+      - "4173:4173"
