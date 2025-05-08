@@ -2,12 +2,14 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Login from './pages/Login';
-import Dashboard from './pages/Dashboard-clients';
+import Dashboard from './pages/Dashboard';
 import Register from './pages/Register'
 import Autos from './pages/Autos'
 import MisReservas from './pages/MisReservas';
 import Perfil from './pages/Perfil';
 import Pagos from './pages/Pagos';
+import Reportes from './pages/Reportes'
+import Resultados from './pages/Resultados'
 
 function AppRoutes() {
   const location = useLocation();
@@ -26,6 +28,8 @@ function AppRoutes() {
         <Route path="/mis-reservas" element={<MisReservas/>}/>
         <Route path="/perfil" element={<Perfil/>}/>
         <Route path="/pagos" element={<Pagos/>}/>
+        <Route path="/reportes" element={<Reportes/>}/>
+        <Route path="/resultados" element={<Resultados/>}/>
       </Routes>
     </>
   );
