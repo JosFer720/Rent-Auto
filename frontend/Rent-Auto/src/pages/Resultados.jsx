@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './Resultados.module.css';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable';
+import autoTable from 'jspdf-autotable';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
 
@@ -81,7 +81,7 @@ export default function Resultados() {
         [2, 2, '$379.85', '2024-04-01', 'Transferencia', 'Sucursal 1'],
       ]
     }
-  };  
+  };
 
   const reporte = reportes[tipo];
 
@@ -101,11 +101,15 @@ export default function Resultados() {
 
   const generarPDF = () => {
     const doc = new jsPDF();
-    doc.text(reporte.titulo, 10, 10);
-    doc.autoTable({
+    doc.setFontSize(16);
+    doc.text(reporte.titulo, 105, 15, { align: 'center' });
+
+    autoTable(doc, {
       head: [reporte.columnas],
       body: datosFiltrados,
+      startY: 25
     });
+
     doc.save('informe.pdf');
   };
 
