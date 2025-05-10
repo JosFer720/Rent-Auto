@@ -34,7 +34,7 @@ export default function Resultados() {
       columnas: ['ID', 'Usuario', 'Vehículo', 'Fecha Inicio', 'Fecha Fin', 'Total', 'Sucursal'],
       endpoint: '/api/reservas',
       filtros: [
-        { label: 'Usuario o ID', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Usuario', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
         { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
@@ -45,7 +45,7 @@ export default function Resultados() {
       columnas: ['ID', 'Placa', 'Marca', 'Modelo', 'Año', 'Estado', 'Categoría', 'Costo Diario'],
       endpoint: '/api/mantenimiento',
       filtros: [
-        { label: 'Placa o ID', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Placa', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Estado', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Disponible', 'Rentado', 'Mantenimiento'] },
         { label: 'Categoría', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: ['Económico', 'SUV', 'Deportivo', 'Familiar', 'Camioneta', 'Eléctrico'] },
         { label: 'Año', value: fechaInicio, onChange: setFechaInicio, type: 'number' }
@@ -56,7 +56,7 @@ export default function Resultados() {
       columnas: ['ID', 'Reserva', 'Fecha Entrega', 'Fecha Devolución', 'Total', 'Estado'],
       endpoint: '/api/alquileres',
       filtros: [
-        { label: 'ID Reserva o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Estado', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Activo', 'Completado'] },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha entrega', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
@@ -68,7 +68,7 @@ export default function Resultados() {
       columnas: ['ID', 'Alquiler', 'Monto', 'Fecha Pago', 'Método', 'Sucursal'],
       endpoint: '/api/ingresos',
       filtros: [
-        { label: 'ID Pago o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Método', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
@@ -80,7 +80,7 @@ export default function Resultados() {
       columnas: ['ID', 'Cliente', 'Monto', 'Fecha Pago', 'Método'],
       endpoint: '/api/pagos',
       filtros: [
-        { label: 'ID Pago o Cliente', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Cliente', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Método de Pago', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
         { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
         { label: 'Monto', value: monto, onChange: setMonto, type: 'number' }
