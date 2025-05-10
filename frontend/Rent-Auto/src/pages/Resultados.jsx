@@ -5,6 +5,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import { Bar } from 'react-chartjs-2';
 import { Chart as ChartJS, BarElement, CategoryScale, LinearScale, Tooltip, Legend } from 'chart.js';
+import * as ExcelJS from 'exceljs'
 
 ChartJS.register(BarElement, CategoryScale, LinearScale, Tooltip, Legend);
 
@@ -17,6 +18,7 @@ export default function Resultados() {
   const tipo = query.get('tipo');
 
   const [filtro, setFiltro] = useState('');
+  const [filtroId, setFiltroId] = useState('');
   const [monto, setMonto] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
@@ -34,7 +36,7 @@ export default function Resultados() {
       columnas: ['ID', 'Usuario', 'Vehículo', 'Fecha Inicio', 'Fecha Fin', 'Total', 'Sucursal'],
       endpoint: '/api/reservas',
       filtros: [
-        { label: 'Usuario o ID', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Usuario o ID', value: filtroId, onChange: setFiltroId, type: 'text' },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
         { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
@@ -45,7 +47,7 @@ export default function Resultados() {
       columnas: ['ID', 'Placa', 'Marca', 'Modelo', 'Año', 'Estado', 'Categoría', 'Costo Diario'],
       endpoint: '/api/mantenimiento',
       filtros: [
-        { label: 'Placa o ID', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Placa o ID', value: filtroId, onChange: setFiltroId, type: 'text' },
         { label: 'Estado', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Disponible', 'Rentado', 'Mantenimiento'] },
         { label: 'Categoría', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: ['Económico', 'SUV', 'Deportivo', 'Familiar', 'Camioneta', 'Eléctrico'] },
         { label: 'Año', value: fechaInicio, onChange: setFechaInicio, type: 'number' }
@@ -56,7 +58,7 @@ export default function Resultados() {
       columnas: ['ID', 'Reserva', 'Fecha Entrega', 'Fecha Devolución', 'Total', 'Estado'],
       endpoint: '/api/alquileres',
       filtros: [
-        { label: 'ID Reserva o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'ID Reserva o Alquiler', value: filtroId, onChange: setFiltroId, type: 'text' },
         { label: 'Estado', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Activo', 'Completado'] },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha entrega', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
@@ -68,9 +70,9 @@ export default function Resultados() {
       columnas: ['ID', 'Cliente', 'Monto', 'Fecha', 'Método'],
       endpoint: '/api/metodos',
       filtros: [
-        { label: 'ID', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'ID', value: filtroId, onChange: setFiltroId, type: 'text' },
         { label: 'Cliente', value: filtro, onChange: setFiltro, type: 'text' },
-        { label: 'Monto min', value: monto, onChange: setMonto, type: 'number'},
+        { label: 'Monto min', value: monto, onChange: setMonto, type: 'number' },
         { label: 'Método', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] }
   ]
 },
@@ -79,9 +81,9 @@ export default function Resultados() {
   columnas: ['ID', 'Alquiler', 'Monto', 'Fecha Pago', 'Método', 'Sucursal'],
   endpoint: '/api/ingresos',
   filtros: [
-    { label: 'ID o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
+    { label: 'ID o Alquiler', value: filtroId, onChange: setFiltroId, type: 'text' },
     { label: 'Método de Pago', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
-    { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => 'Sucursal ${i + 1}') },
+    { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
     { label: 'Min Mon', value: monto, onChange: setMonto, type: 'number' }
   ]
 }
@@ -109,6 +111,7 @@ export default function Resultados() {
         .then(data => {
           // Convertir los datos del formato de objeto a matriz para compatibilidad con el código existente
           const formattedData = data.map(item => {
+
             // Extraer valores en el mismo orden que las columnas
             return Object.values(item);
           });
@@ -119,6 +122,7 @@ export default function Resultados() {
           console.error("Error al obtener datos:", err);
           setError(err.message);
           setCargando(false);
+
           // Si hay un error, cargar datos de demostración para desarrollo
           setDatos(getDatosDemostracion(tipo));
         });
@@ -140,7 +144,7 @@ export default function Resultados() {
         [1, 1, '2024-04-08', '2024-04-15', '$1030.90', 'Completado'],
         [2, 2, '2024-07-13', '2024-07-16', '$961.72', 'Completado'],
       ],
-      ingresos_reportes: [  // Clave modificada para mantener consistencia
+      ingresos: [ 
         [1, 1, '$195.76', '2024-04-09', 'Transferencia', 'Sucursal 5'],
         [2, 2, '$379.85', '2024-04-01', 'Transferencia', 'Sucursal 1'],
       ]
@@ -151,9 +155,12 @@ export default function Resultados() {
   const datosFiltrados = datos.filter((fila) => {
     if (!fila || fila.length === 0) return false;
     
+    
     const filaString = fila.map(c => c?.toString().toLowerCase() || '');
     const searchText = filtro.toLowerCase();
     
+    const incluyeId = filtroId === '' || fila[0]?.toString().includes(filtroId);
+
     // Buscar por texto en cualquier columna o ID exacto
     const incluyeFiltro = filaString.some(c => c.includes(searchText)) || 
                          (fila[0]?.toString() === filtro);
@@ -175,8 +182,12 @@ export default function Resultados() {
                          fechaColumnas.some(fecha => 
                          (!fechaInicio || fecha >= fechaInicio) && 
                          (!fechaFin || fecha <= fechaFin));
+
+    const montoColumna = fila.find(c => typeof c === 'string' && c.includes('$'));
+    const Obtener_numerico = montoColumna ? parseFloat(montoColumna.replace('$' , '').replace(',','')) : 0;
+    const verificar_monto = !monto || Obtener_numerico >= parseFloat(monto);
     
-    return incluyeFiltro && filtro1 && filtro2 && dentroDeFechas;
+    return incluyeId && incluyeFiltro && filtro1 && filtro2 && dentroDeFechas && verificar_monto;
   });
 
   const generarPDF = () => {
@@ -193,10 +204,58 @@ export default function Resultados() {
     doc.save(`informe_${tipo}_${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
+  const generarExcel = () => {
+
+    // Crear archivo
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet(reporte.titulo);
+    
+    worksheet.addRow(reporte.columnas);
+    
+    worksheet.getRow(1).font = { bold: true };
+    worksheet.getRow(1).fill = {
+      type: 'pattern',
+      pattern: 'solid',
+      fgColor: { argb: '4E8C7B' } 
+    };
+    worksheet.getRow(1).font = { color: { argb: 'FFFFFF' }, bold: true };
+    
+    
+    datosFiltrados.forEach(fila => {
+      worksheet.addRow(fila);
+    });
+    
+    // Ajustar el ancho de las columnas automáticamente
+    worksheet.columns.forEach((column) => {
+      let maxLength = 0;
+      column.eachCell({ includeEmpty: true }, (cell) => {
+        const columnLength = cell.value ? cell.value.toString().length : 10;
+        if (columnLength > maxLength) {
+          maxLength = columnLength;
+        }
+      });
+      column.width = maxLength < 10 ? 10 : maxLength + 2;
+    });
+    
+    // Generar el archivo y descargarlo
+    workbook.xlsx.writeBuffer().then(buffer => {
+      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `informe_${tipo}_${new Date().toISOString().slice(0, 10)}.xlsx`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    });
+  }; 
+
   const datosGrafica = {
     labels: datosFiltrados.map((fila, index) => {
       // Para el eje X, usar una columna descriptiva o el índice
-      const posiblesLabels = [1, 2]; // índices de columnas que podrían ser buen label
+
+      const posiblesLabels = [1, 2]; 
       const labelCol = posiblesLabels.find(i => fila[i] && typeof fila[i] === 'string') || 0;
       return fila[labelCol]?.toString() || `Item ${index + 1}`;
     }),
@@ -204,6 +263,7 @@ export default function Resultados() {
       {
         label: 'Monto',
         data: datosFiltrados.map((fila) => {
+
           // Buscar columna con valores monetarios
           const montoIndex = fila.findIndex(c => 
             typeof c === 'string' && c.includes('$') ||
@@ -289,6 +349,7 @@ export default function Resultados() {
         ))}
         
         <button className={styles.filtro} onClick={generarPDF}>Generar PDF</button>
+        <button className={styles.filtro} onClick={generarExcel}>Generar Excel</button>
         <button className={styles.filtro} onClick={() => setVerGrafica(!verGrafica)}>
           {verGrafica ? 'Ver Tabla' : 'Ver Gráfica'}
         </button>

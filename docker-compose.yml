@@ -39,8 +39,7 @@ services:
       POSTGRES_DB: rent_auto
     volumes:
       - pgdata:/var/lib/postgresql/data
-<<<<<<< HEAD
-      - ./backend/database:/docker-entrypoint-initdb.d  # ¡Ruta corregida!
+      - ./backend/database:/docker-entrypoint-initdb.d 
     ports:
       - "5432:5432"
     healthcheck:
@@ -48,9 +47,6 @@ services:
       interval: 5s
       timeout: 5s
       retries: 5
-=======
-      - ./database:/docker-entrypoint-initdb.d
->>>>>>> d050911 (Api and DB responses)
 
 volumes:
   pgdata:
