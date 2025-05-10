@@ -27,6 +27,7 @@ def get_connection():
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Error de conexión a la base de datos: {str(e)}")
 
+
 @app.get("/api/reservas")
 def get_reservas():
     conn = None
@@ -50,6 +51,7 @@ def get_reservas():
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
+        print("ERRO SQL EN /api/reservas/:", e)
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
     finally:
         if conn:
