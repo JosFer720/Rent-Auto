@@ -12,14 +12,10 @@ export default function Reportes() {
   const reportes = [
     { tipo: 'reservas_usuario', icono: '📋', titulo: 'Reservas por Usuario' },
     { tipo: 'mantenimiento', icono: '🧰', titulo: 'Vehículos en Mantenimiento' },
-<<<<<<< HEAD
-    { tipo: 'pagos', icono: '💳', titulo: 'Pagos por Método' },         // ✅ ahora es tipo 'pagos'
-=======
     { tipo: 'metodos', icono: '💳', titulo: 'Pagos por Método' },
->>>>>>> d050911 (Api and DB responses)
     { tipo: 'alquileres', icono: '🚗', titulo: 'Alquileres Activos' },
-    { tipo: 'ingresos', icono: '🏢', titulo: 'Ingresos por Sucursal' }   // ✅ este se queda como 'ingresos'
-  ];
+    { tipo: 'ingresos', icono: '🏢', titulo: 'Ingresos por Sucursal' }
+  ];  
 
   return (
     <div className={styles.autosContainer}>

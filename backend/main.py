@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException, Query
+from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
-from typing import Optional
+from typing import List, Dict, Any
 
 app = FastAPI()
 
-# CORS config
+# Configuración de CORS para permitir solicitudes desde el frontend
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -45,19 +45,12 @@ def get_reservas():
                 FROM reserva r
                 JOIN usuario u ON r.id_usuario = u.id_usuario
                 JOIN vehiculo v ON r.id_vehiculo = v.id_vehiculo
-<<<<<<< HEAD
-                JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
-                JOIN sucursal s ON us.id_sucursal = s.id_sucursal
-                ORDER BY r.id_reserva
-=======
                 LEFT JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
                 LEFT JOIN sucursal s ON us.id_sucursal = s.id_sucursal
                 ORDER BY r.id_reserva;
->>>>>>> d050911 (Api and DB responses)
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
-        print("ERRO SQL EN /api/reservas:", e)
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
     finally:
         if conn:
@@ -117,13 +110,13 @@ def get_alquileres():
             conn.close()
 
 @app.get("/api/ingresos")
-def get_ingresos(monto: Optional[float] = Query(None)):
+def get_ingresos():
     conn = None
     try:
         conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            query = """
-                SELECT 
+            cur.execute("""
+                SELECT
                     p.id_pago AS id,
                     p.id_alquiler,
                     p.monto,
@@ -133,15 +126,9 @@ def get_ingresos(monto: Optional[float] = Query(None)):
                 FROM pago p
                 JOIN alquiler a ON p.id_alquiler = a.id_alquiler
                 JOIN reserva r ON a.id_reserva = r.id_reserva
-                JOIN usuario_sucursal us ON r.id_usuario = us.id_usuario
-                JOIN sucursal s ON us.id_sucursal = s.id_sucursal
-            """
-            params = []
-            if monto is not None:
-                query += " WHERE p.monto = %s"
-                params.append(monto)
-            query += " ORDER BY p.id_pago"
-            cur.execute(query, params)
+                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
+                ORDER BY p.id_pago
+            """)
             return cur.fetchall()
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
@@ -149,36 +136,6 @@ def get_ingresos(monto: Optional[float] = Query(None)):
         if conn:
             conn.close()
 
-@app.get("/api/pagos")
-def get_pagos(monto: Optional[float] = Query(None)):
-    conn = None
-    try:
-        conn = get_connection()
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            query = """
-                SELECT 
-                    p.id_pago AS id,
-                    u.nombre AS cliente,
-                    p.monto,
-                    p.fecha_pago::date AS fecha_pago,
-                    p.metodo
-                FROM pago p
-                JOIN alquiler a ON p.id_alquiler = a.id_alquiler
-                JOIN reserva r ON a.id_reserva = r.id_reserva
-                JOIN usuario u ON r.id_usuario = u.id_usuario
-            """
-            params = []
-            if monto is not None:
-                query += " WHERE p.monto = %s"
-                params.append(monto)
-            query += " ORDER BY p.id_pago"
-            cur.execute(query, params)
-            return cur.fetchall()
-    except psycopg2.Error as e:
-        raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
-    finally:
-        if conn:
-            conn.close()
 
 @app.get("/api/ingresos/sucursal")
 def ingresos_por_sucursal():
