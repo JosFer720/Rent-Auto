@@ -1,71 +1,116 @@
-# Proyecto Rent-Auto
+# 🚗 Proyecto Rent-Auto
 
-Este proyecto utiliza Docker para levantar todos los servicios necesarios de forma rápida y sencilla. A continuación se explican los pasos para construir y ejecutar el entorno de desarrollo.
+**Rent-Auto** es una aplicación web para la gestión de alquiler de vehículos. Utiliza Docker para levantar automáticamente los servicios necesarios: frontend, backend y base de datos.
 
-## Requisitos previos
+---
+
+## ✅ Requisitos Previos
 
 Antes de comenzar, asegúrate de tener instalado:
 
 - [Docker](https://www.docker.com/)
-- [Docker Compose](https://docs.docker.com/compose/) (en versiones modernas de Docker ya viene incluido)
+- [Docker Compose](https://docs.docker.com/compose/) (ya viene incluido en versiones modernas de Docker)
 
-## Estructura del proyecto
+---
+
+## 📁 Estructura del Proyecto
 
 ```
-project-root/
+Rent-Auto/
 ├── docker-compose.yml
+├── backend/
+│   ├── main.py
+│   ├── requirements.txt
+│   ├── database/
+│   │   ├── 01_ddl.sql
+│   │   ├── 02_data.sql
+│   │   └── dockerfile
+│   └── dockerfile
+│
 ├── frontend/
 │   └── Rent-Auto/
 │       ├── Dockerfile
+│       ├── index.html
+│       ├── nginx.conf
 │       ├── package.json
-│       └── ...
+│       ├── vite.config.js
+│       └── src/
+│
+├── Proyecto#3*.pdf
 └── README.md
 ```
 
-## Cómo levantar el proyecto
+---
 
-### 1. Clonar el repositorio (si aún no lo has hecho)
+## 🚀 Cómo Levantar el Proyecto
+
+### 1. Clonar el repositorio
 
 ```bash
 git clone https://github.com/JosFer720/Rent-Auto
 cd Rent-Auto
 ```
 
-### 2. Construir y ejecutar los servicios con Docker Compose
-
-En la raíz del proyecto, ejecuta:
+### 2. Construir y ejecutar los servicios
 
 ```bash
 docker compose up --build
 ```
 
-Este comando construirá las imágenes y levantará los contenedores definidos en el archivo `docker-compose.yml`.
+Esto construirá y levantará automáticamente los siguientes servicios:
 
-### 3. Acceder a la aplicación
+- 🧠 **Backend** (Python): http://localhost:3001  
+- 🌐 **Frontend** (Vite + Nginx): http://localhost:4173  
+- 🗄️ **Base de Datos** (PostgreSQL): puerto `5432` (expuesto para conexión local si es necesario)
 
-Una vez que los contenedores estén corriendo, puedes acceder a la aplicación en tu navegador en:
-
-```
-http://localhost:4173
-```
-
-> Asegúrate de que el puerto `4173` no esté siendo usado por otro proceso.
-
-### 4. Detener los servicios
-
-Cuando termines de trabajar con el proyecto, puedes detener los contenedores con:
+### 3. Detener los servicios
 
 ```bash
 docker compose down
 ```
 
-Esto apagará y eliminará los contenedores, pero conservará las imágenes construidas.
+---
 
-## Observaciones
+## 🌐 Acceso a la Aplicación
 
-- El proyecto se ejecuta completamente dentro de contenedores, por lo que no necesitas instalar dependencias de manera manual.
-- Si haces cambios en el código fuente, es recomendable reconstruir los servicios con:
+Una vez que los contenedores estén activos:
+
+- Frontend: [http://localhost:4173](http://localhost:4173)
+- Backend (API REST): [http://localhost:3001](http://localhost:3001)
+
+> Asegúrate de que los puertos `4173`, `3001` y `5432` no estén siendo usados por otros procesos.
+
+---
+
+## 📦 Base de Datos
+
+- El contenedor de PostgreSQL ejecuta los scripts SQL automáticamente:
+  - `01_ddl.sql`: crea las tablas.
+  - `02_data.sql`: inserta datos iniciales.
+- Las credenciales y el nombre de la base de datos están definidos en `docker-compose.yml`.
+
+---
+
+## 🔄 Desarrollo
+
+No necesitas instalar manualmente dependencias. Si realizas cambios en el código fuente:
 
 ```bash
 docker compose up --build
 ```
+
+Esto reconstruirá los servicios con los cambios aplicados.
+
+---
+
+## 📄 Documentación
+
+El repositorio incluye reportes y documentación técnica:
+
+Archivos con reflexiones individuales
+- `Proyecto#3 BD Erick Guerra - 23208.pdf`
+- `Proyecto#3 BD Fernando Ruíz - 23065.pdf`
+- `Proyecto#3FabianMorales.pdf`
+
+Esta archivo es el diagrama de entidad relación ER
+- `Proyecto3 Fabian Morales.pdf`
