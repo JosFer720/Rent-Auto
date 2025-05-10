@@ -28,6 +28,7 @@ export default function Resultados() {
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState(null);
 
+  // Diccionario de reportes corregido - las claves deben ser únicas
   const reportes = {
     reservas_usuario: {
       titulo: 'Reservas por Usuario',
@@ -63,8 +64,13 @@ export default function Resultados() {
         { label: 'Fecha devolución', value: fechaFin, onChange: setFechaFin, type: 'date' }
       ]
     },
+<<<<<<< HEAD
     ingresos: {
       titulo: 'Ingresos por Sucursal',
+=======
+    ingresos_reportes: { 
+      titulo: 'Ingresos',
+>>>>>>> d050911 (Api and DB responses)
       columnas: ['ID', 'Alquiler', 'Monto', 'Fecha Pago', 'Método', 'Sucursal'],
       endpoint: '/api/ingresos',
       filtros: [
@@ -75,6 +81,7 @@ export default function Resultados() {
         { label: 'Monto', value: monto, onChange: setMonto, type: 'number' }
       ]
     },
+<<<<<<< HEAD
     pagos: {
       titulo: 'Pagos por Cliente',
       columnas: ['ID', 'Cliente', 'Monto', 'Fecha Pago', 'Método'],
@@ -85,6 +92,27 @@ export default function Resultados() {
         { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
         { label: 'Monto', value: monto, onChange: setMonto, type: 'number' }
       ]
+=======
+    metodos: {
+      titulo: 'Pagos por Método',
+      columnas: ['Método', 'Cantidad de Pagos', 'Total Recaudado'],
+      endpoint: '/api/metodos',
+      filtros: [
+        { label: 'Método', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
+        { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
+  ]
+},
+    ingresos: {
+  titulo: 'Ingresos por Sucursal',
+  columnas: ['Sucursal', 'Cantidad de Pagos', 'Total Recaudado'],
+  endpoint: '/api/ingresos_sucursal',
+  filtros: [
+    { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'text' },
+    { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
+    { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
+  ]
+>>>>>>> d050911 (Api and DB responses)
 }
 
   };
@@ -119,6 +147,7 @@ export default function Resultados() {
 
   const getDatosDemostracion = (tipo) => {
     const demoDatos = {
+<<<<<<< HEAD
       ingresos: [
         [1, 1, '$379.85', '2024-04-01', 'Transferencia', 'Sucursal 1'],
         [2, 2, '$120.50', '2024-03-15', 'Efectivo', 'Sucursal 2'],
@@ -153,6 +182,26 @@ export default function Resultados() {
     const valor = parseFloat(monto.toString().replace('$', '').replace(',', ''));
     return (!montoMin || valor >= parseFloat(montoMin)) &&
            (!montoMax || valor <= parseFloat(montoMax));
+=======
+      reservas_usuario: [
+        [1, 'Usuario 164', 'Nissan Model X', '2024-01-13', '2024-01-18', '$442.85', 'Sucursal 2'],
+        [2, 'Usuario 36', 'Nissan Model Y', '2024-02-22', '2024-03-02', '$221.71', 'Sucursal 8'],
+      ],
+      mantenimiento: [
+        [1, 'XYZ0001', 'Nissan', 'Model X', 2013, 'Mantenimiento', 'Familiar', '$123.95'],
+        [2, 'XYZ0002', 'Nissan', 'Model Y', 2012, 'Mantenimiento', 'SUV', '$36.16'],
+      ],
+      alquileres: [
+        [1, 1, '2024-04-08', '2024-04-15', '$1030.90', 'Completado'],
+        [2, 2, '2024-07-13', '2024-07-16', '$961.72', 'Completado'],
+      ],
+      ingresos_reportes: [  // Clave modificada para mantener consistencia
+        [1, 1, '$195.76', '2024-04-09', 'Transferencia', 'Sucursal 5'],
+        [2, 2, '$379.85', '2024-04-01', 'Transferencia', 'Sucursal 1'],
+      ]
+    };
+    return demoDatos[tipo] || [];
+>>>>>>> d050911 (Api and DB responses)
   };
 
   const datosFiltrados = datos.filter((fila) => {

@@ -45,9 +45,15 @@ def get_reservas():
                 FROM reserva r
                 JOIN usuario u ON r.id_usuario = u.id_usuario
                 JOIN vehiculo v ON r.id_vehiculo = v.id_vehiculo
+<<<<<<< HEAD
                 JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
                 JOIN sucursal s ON us.id_sucursal = s.id_sucursal
                 ORDER BY r.id_reserva
+=======
+                LEFT JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
+                LEFT JOIN sucursal s ON us.id_sucursal = s.id_sucursal
+                ORDER BY r.id_reserva;
+>>>>>>> d050911 (Api and DB responses)
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
@@ -173,6 +179,74 @@ def get_pagos(monto: Optional[float] = Query(None)):
     finally:
         if conn:
             conn.close()
+
+@app.get("/api/ingresos/sucursal")
+def ingresos_por_sucursal():
+    conn = None
+    try:
+        conn = get_connection()
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT s.nombre AS sucursal, SUM(p.monto)::numeric(10,2) AS total
+                FROM pago p
+                JOIN alquiler a ON p.id_alquiler = a.id_alquiler
+                JOIN reserva r ON a.id_reserva = r.id_reserva
+                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
+                GROUP BY s.nombre
+                ORDER BY s.nombre
+            """)
+            return cur.fetchall()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
+
+
+@app.get("/api/ingresos_sucursal")
+def ingresos_por_sucursal():
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT
+                    s.nombre AS sucursal,
+                    COUNT(*) AS cantidad_de_pagos,
+                    SUM(p.monto) AS total_recaudado
+                FROM pago p
+                JOIN alquiler a ON p.id_alquiler = a.id_alquiler
+                JOIN reserva r ON a.id_reserva = r.id_reserva
+                JOIN usuario u ON r.id_usuario = u.id_usuario
+                LEFT JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
+                LEFT JOIN sucursal s ON us.id_sucursal = s.id_sucursal
+                GROUP BY s.nombre
+                ORDER BY total_recaudado DESC;
+            """)
+            return cur.fetchall()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
+
+@app.get("/api/metodos")
+def ingresos_por_metodo():
+    conn = get_connection()
+    try:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT
+                    metodo,
+                    COUNT(*) AS cantidad,
+                    SUM(monto) AS total
+                FROM pago
+                GROUP BY metodo
+                ORDER BY total DESC;
+            """)
+            return cur.fetchall()
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+    finally:
+        conn.close()
 
 @app.get("/health")
 def health_check():
