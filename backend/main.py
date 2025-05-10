@@ -1,13 +1,13 @@
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
-from typing import List, Dict, Any
+from typing import Optional
 
 app = FastAPI()
 
-# Configuración de CORS para permitir solicitudes desde el frontend
+# CORS config
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -26,7 +26,6 @@ def get_connection():
         )
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Error de conexión a la base de datos: {str(e)}")
-
 
 @app.get("/api/reservas")
 def get_reservas():
@@ -112,12 +111,12 @@ def get_alquileres():
             conn.close()
 
 @app.get("/api/ingresos")
-def get_ingresos():
+def get_ingresos(monto: Optional[float] = Query(None)):
     conn = None
     try:
         conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("""
+            query = """
                 SELECT 
                     p.id_pago AS id,
                     p.id_alquiler,
@@ -130,8 +129,13 @@ def get_ingresos():
                 JOIN reserva r ON a.id_reserva = r.id_reserva
                 JOIN usuario_sucursal us ON r.id_usuario = us.id_usuario
                 JOIN sucursal s ON us.id_sucursal = s.id_sucursal
-                ORDER BY p.id_pago;
-            """)
+            """
+            params = []
+            if monto is not None:
+                query += " WHERE p.monto = %s"
+                params.append(monto)
+            query += " ORDER BY p.id_pago"
+            cur.execute(query, params)
             return cur.fetchall()
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
@@ -140,12 +144,12 @@ def get_ingresos():
             conn.close()
 
 @app.get("/api/pagos")
-def get_pagos():
+def get_pagos(monto: Optional[float] = Query(None)):
     conn = None
     try:
         conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("""
+            query = """
                 SELECT 
                     p.id_pago AS id,
                     u.nombre AS cliente,
@@ -156,8 +160,13 @@ def get_pagos():
                 JOIN alquiler a ON p.id_alquiler = a.id_alquiler
                 JOIN reserva r ON a.id_reserva = r.id_reserva
                 JOIN usuario u ON r.id_usuario = u.id_usuario
-                ORDER BY p.id_pago;
-            """)
+            """
+            params = []
+            if monto is not None:
+                query += " WHERE p.monto = %s"
+                params.append(monto)
+            query += " ORDER BY p.id_pago"
+            cur.execute(query, params)
             return cur.fetchall()
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")

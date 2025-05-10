@@ -22,8 +22,7 @@ export default function Resultados() {
   const [fechaFin, setFechaFin] = useState('');
   const [filtroAdicional1, setFiltroAdicional1] = useState('');
   const [filtroAdicional2, setFiltroAdicional2] = useState('');
-  const [montoMin, setMontoMin] = useState('');
-  const [montoMax, setMontoMax] = useState('');
+  const [monto, setMonto] = useState('');
   const [verGrafica, setVerGrafica] = useState(false);
   const [datos, setDatos] = useState([]);
   const [cargando, setCargando] = useState(true);
@@ -73,8 +72,7 @@ export default function Resultados() {
         { label: 'Método', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
-        { label: 'Monto mínimo', value: montoMin, onChange: setMontoMin, type: 'number' },
-        { label: 'Monto máximo', value: montoMax, onChange: setMontoMax, type: 'number' }
+        { label: 'Monto', value: monto, onChange: setMonto, type: 'number' }
       ]
     },
     pagos: {
@@ -85,11 +83,10 @@ export default function Resultados() {
         { label: 'ID Pago o Cliente', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Método de Pago', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
         { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
-        { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' },
-        { label: 'Monto mínimo', value: montoMin, onChange: setMontoMin, type: 'number' },
-        { label: 'Monto máximo', value: montoMax, onChange: setMontoMax, type: 'number' }
+        { label: 'Monto', value: monto, onChange: setMonto, type: 'number' }
       ]
-    }
+}
+
   };
 
   const reporte = reportes[tipo];
