@@ -1,3 +1,5 @@
+version: "3.8"
+
 services:
   frontend:
     build:
@@ -5,3 +7,35 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4173:4173"
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    volumes:
+      - ./backend:/app
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    environment:
+      DB_USER: postgres
+      DB_PASSWORD: postgres
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_NAME: rent_auto
+
+  db:
+    image: postgres:15
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: rent_auto
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
