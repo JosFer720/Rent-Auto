@@ -118,7 +118,7 @@ def get_ingresos():
         conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("""
-                SELECT
+                SELECT 
                     p.id_pago AS id,
                     p.id_alquiler,
                     p.monto,
@@ -128,8 +128,8 @@ def get_ingresos():
                 FROM pago p
                 JOIN alquiler a ON p.id_alquiler = a.id_alquiler
                 JOIN reserva r ON a.id_reserva = r.id_reserva
-                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
-                ORDER BY p.id_pago
+                JOIN sucursal s ON r.id_sucursal_retiro = s.id_sucursal
+                ORDER BY p.id_pago;
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
