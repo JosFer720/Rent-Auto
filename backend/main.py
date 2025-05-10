@@ -1,5 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Query
+from typing import Optional
 import psycopg2
 from psycopg2.extras import RealDictCursor
 import os
@@ -110,54 +112,60 @@ def get_alquileres():
             conn.close()
 
 @app.get("/api/ingresos")
-def get_ingresos():
-    conn = None
+def get_ingresos(
+    id_alquiler: Optional[str] = Query(default='', alias='alquiler'),
+    metodo: Optional[str] = Query(default='', alias='metodo'),
+    sucursal: Optional[str] = Query(default='', alias='sucursal'),
+    monto: Optional[float] = Query(default=None, alias='monto')
+):
+    conn = get_connection()
     try:
-        conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("""
+            query = """
                 SELECT
                     p.id_pago AS id,
                     p.id_alquiler,
                     p.monto,
                     p.fecha_pago::date AS fecha_pago,
                     p.metodo,
-                    s.nombre AS sucursal
+                    COALESCE(s.nombre, 'Sin Sucursal') AS sucursal
                 FROM pago p
                 JOIN alquiler a ON p.id_alquiler = a.id_alquiler
                 JOIN reserva r ON a.id_reserva = r.id_reserva
-                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
-                ORDER BY p.id_pago
-            """)
-            return cur.fetchall()
-    except psycopg2.Error as e:
-        raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
-    finally:
-        if conn:
-            conn.close()
+                JOIN usuario u ON r.id_usuario = u.id_usuario
+                LEFT JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
+                LEFT JOIN sucursal s ON us.id_sucursal = s.id_sucursal
+                WHERE 1=1
+            """
 
+            params = {}
 
-@app.get("/api/ingresos/sucursal")
-def ingresos_por_sucursal():
-    conn = None
-    try:
-        conn = get_connection()
-        with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("""
-                SELECT s.nombre AS sucursal, SUM(p.monto)::numeric(10,2) AS total
-                FROM pago p
-                JOIN alquiler a ON p.id_alquiler = a.id_alquiler
-                JOIN reserva r ON a.id_reserva = r.id_reserva
-                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
-                GROUP BY s.nombre
-                ORDER BY s.nombre
-            """)
+            if id_alquiler:
+                query += " AND CAST(p.id_alquiler AS TEXT) ILIKE %(id_alquiler)s"
+                params["id_alquiler"] = f"%{id_alquiler}%"
+
+            if metodo:
+                query += " AND LOWER(p.metodo) = LOWER(%(metodo)s)"
+                params["metodo"] = metodo
+
+            if sucursal:
+                query += " AND LOWER(s.nombre) ILIKE %(sucursal)s"
+                params["sucursal"] = f"%{sucursal.lower()}%"
+
+            if monto is not None:
+                query += " AND p.monto >= %(monto)s"
+                params["monto"] = monto
+
+            query += " ORDER BY p.fecha_pago DESC"
+
+            cur.execute(query, params)
             return cur.fetchall()
     except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Error: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Error en /api/ingresos: {str(e)}")
     finally:
-        if conn:
-            conn.close()
+        conn.close()
+
+
 
 
 @app.get("/api/ingresos_sucursal")
@@ -186,25 +194,53 @@ def ingresos_por_sucursal():
         conn.close()
 
 @app.get("/api/metodos")
-def ingresos_por_metodo():
-    conn = get_connection()
+def get_metodos(
+    id: int = Query(None),
+    cliente: str = Query(None),
+    metodo: str = Query(None),
+    monto_min: float = Query(None)
+):
+    conn = None
     try:
+        conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
-            cur.execute("""
-                SELECT
-                    metodo,
-                    COUNT(*) AS cantidad,
-                    SUM(monto) AS total
-                FROM pago
-                GROUP BY metodo
-                ORDER BY total DESC;
-            """)
-            return cur.fetchall()
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
-    finally:
-        conn.close()
+            query = """
+                SELECT 
+                    p.id_pago AS id,
+                    u.nombre AS cliente,
+                    p.monto,
+                    p.fecha_pago::date AS fecha_pago,
+                    p.metodo
+                FROM pago p
+                JOIN alquiler a ON p.id_alquiler = a.id_alquiler
+                JOIN reserva r ON a.id_reserva = r.id_reserva
+                JOIN usuario u ON r.id_usuario = u.id_usuario
+                WHERE 1=1
+            """
+            params = []
 
-@app.get("/health")
-def health_check():
-    return {"status": "healthy"}
+            if id is not None:
+                query += " AND p.id_pago = %s"
+                params.append(id)
+
+            if cliente:
+                query += " AND LOWER(u.nombre) LIKE %s"
+                params.append(f"%{cliente.lower()}%")
+
+            if metodo:
+                query += " AND LOWER(p.metodo) = %s"
+                params.append(metodo.lower())
+
+            if monto_min is not None:
+                query += " AND p.monto >= %s"
+                params.append(monto_min)
+
+            query += " ORDER BY p.fecha_pago DESC"
+
+            cur.execute(query, params)
+            return cur.fetchall()
+    except psycopg2.Error as e:
+        raise HTTPException(status_code=500, detail=f"Error SQL en /api/metodos: {str(e)}")
+    finally:
+        if conn:
+            conn.close()

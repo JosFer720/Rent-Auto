@@ -17,6 +17,7 @@ export default function Resultados() {
   const tipo = query.get('tipo');
 
   const [filtro, setFiltro] = useState('');
+  const [monto, setMonto] = useState('');
   const [fechaInicio, setFechaInicio] = useState('');
   const [fechaFin, setFechaFin] = useState('');
   const [filtroAdicional1, setFiltroAdicional1] = useState('');
@@ -62,35 +63,26 @@ export default function Resultados() {
         { label: 'Fecha devolución', value: fechaFin, onChange: setFechaFin, type: 'date' }
       ]
     },
-    ingresos_reportes: { 
-      titulo: 'Ingresos',
-      columnas: ['ID', 'Alquiler', 'Monto', 'Fecha Pago', 'Método', 'Sucursal'],
-      endpoint: '/api/ingresos',
-      filtros: [
-        { label: 'ID Pago o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
-        { label: 'Método', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
-        { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
-        { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' }
-      ]
-    },
     metodos: {
       titulo: 'Pagos por Método',
-      columnas: ['Método', 'Cantidad de Pagos', 'Total Recaudado'],
+      columnas: ['ID', 'Cliente', 'Monto', 'Fecha', 'Método'],
       endpoint: '/api/metodos',
       filtros: [
-        { label: 'Método', value: filtro, onChange: setFiltro, type: 'text' },
-        { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
-        { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
+        { label: 'ID', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Cliente', value: filtro, onChange: setFiltro, type: 'text' },
+        { label: 'Monto min', value: monto, onChange: setMonto, type: 'number'},
+        { label: 'Método', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] }
   ]
 },
-    ingresos: {
-  titulo: 'Ingresos por Sucursal',
-  columnas: ['Sucursal', 'Cantidad de Pagos', 'Total Recaudado'],
-  endpoint: '/api/ingresos_sucursal',
+  ingresos: {
+  titulo: 'Ingresos Detallados',
+  columnas: ['ID', 'Alquiler', 'Monto', 'Fecha Pago', 'Método', 'Sucursal'],
+  endpoint: '/api/ingresos',
   filtros: [
-    { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'text' },
-    { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
-    { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
+    { label: 'ID o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
+    { label: 'Método de Pago', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
+    { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => 'Sucursal ${i + 1}') },
+    { label: 'Min Mon', value: monto, onChange: setMonto, type: 'number' }
   ]
 }
 
