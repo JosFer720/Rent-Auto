@@ -46,12 +46,13 @@ def get_reservas():
                 FROM reserva r
                 JOIN usuario u ON r.id_usuario = u.id_usuario
                 JOIN vehiculo v ON r.id_vehiculo = v.id_vehiculo
-                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
+                JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
+                JOIN sucursal s ON us.id_sucursal = s.id_sucursal
                 ORDER BY r.id_reserva
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
-        print("ERRO SQL EN /api/reservas/:", e)
+        print("ERRO SQL EN /api/reservas:", e)
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
     finally:
         if conn:
