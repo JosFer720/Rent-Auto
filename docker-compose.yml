@@ -7,11 +7,16 @@ services:
       dockerfile: Dockerfile
     ports:
       - "4173:4173"
+    volumes:
+      - ./frontend/Rent-Auto:/app
+      - /app/node_modules
+    command: npm run dev -- --host
+    stdin_open: true
+    tty: true
 
   backend:
     build:
       context: ./backend
-      dockerfile: Dockerfile
     volumes:
       - ./backend:/app
     ports:

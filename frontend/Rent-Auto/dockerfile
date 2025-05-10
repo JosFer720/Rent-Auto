@@ -1,4 +1,4 @@
-FROM node:23
+FROM node:18
 
 WORKDIR /app
 
@@ -8,8 +8,7 @@ RUN npm install
 
 COPY . .
 
-RUN npm run build
-
 EXPOSE 4173
 
-CMD ["npm", "start"]
+# Para desarrollo
+CMD ["npm", "run", "dev", "--", "--host"]

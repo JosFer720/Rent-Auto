@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import styles from './Resultados.module.css';
 import jsPDF from 'jspdf';
@@ -22,80 +22,146 @@ export default function Resultados() {
   const [filtroAdicional1, setFiltroAdicional1] = useState('');
   const [filtroAdicional2, setFiltroAdicional2] = useState('');
   const [verGrafica, setVerGrafica] = useState(false);
+  const [datos, setDatos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+  const [error, setError] = useState(null);
 
   const reportes = {
     reservas_usuario: {
       titulo: 'Reservas por Usuario',
       columnas: ['ID', 'Usuario', 'Vehículo', 'Fecha Inicio', 'Fecha Fin', 'Total', 'Sucursal'],
+      endpoint: '/api/reservas',
       filtros: [
         { label: 'Usuario o ID', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha inicio', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
         { label: 'Fecha fin', value: fechaFin, onChange: setFechaFin, type: 'date' }
-      ],
-      datos: [
-        [1, 'Usuario 164', 'Nissan Model X', '2024-01-13', '2024-01-18', '$442.85', 'Sucursal 2'],
-        [2, 'Usuario 36', 'Nissan Model Y', '2024-02-22', '2024-03-02', '$221.71', 'Sucursal 8'],
       ]
     },
     mantenimiento: {
       titulo: 'Mantenimiento',
       columnas: ['ID', 'Placa', 'Marca', 'Modelo', 'Año', 'Estado', 'Categoría', 'Costo Diario'],
+      endpoint: '/api/mantenimiento',
       filtros: [
         { label: 'Placa o ID', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Estado', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Disponible', 'Rentado', 'Mantenimiento'] },
         { label: 'Categoría', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: ['Económico', 'SUV', 'Deportivo', 'Familiar', 'Camioneta', 'Eléctrico'] },
         { label: 'Año', value: fechaInicio, onChange: setFechaInicio, type: 'number' }
-      ],
-      datos: [
-        [1, 'XYZ0001', 'Nissan', 'Model X', 2013, 'Mantenimiento', 'Familiar', '$123.95'],
-        [2, 'XYZ0002', 'Nissan', 'Model Y', 2012, 'Mantenimiento', 'SUV', '$36.16'],
       ]
     },
     alquileres: {
       titulo: 'Alquileres Activos',
       columnas: ['ID', 'Reserva', 'Fecha Entrega', 'Fecha Devolución', 'Total', 'Estado'],
+      endpoint: '/api/alquileres',
       filtros: [
         { label: 'ID Reserva o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Estado', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Activo', 'Completado'] },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha entrega', value: fechaInicio, onChange: setFechaInicio, type: 'date' },
         { label: 'Fecha devolución', value: fechaFin, onChange: setFechaFin, type: 'date' }
-      ],
-      datos: [
-        [1, 1, '2024-04-08', '2024-04-15', '$1030.90', 'Completado'],
-        [2, 2, '2024-07-13', '2024-07-16', '$961.72', 'Completado'],
       ]
     },
     ingresos: {
       titulo: 'Ingresos',
       columnas: ['ID', 'Alquiler', 'Monto', 'Fecha Pago', 'Método', 'Sucursal'],
+      endpoint: '/api/ingresos',
       filtros: [
         { label: 'ID Pago o Alquiler', value: filtro, onChange: setFiltro, type: 'text' },
         { label: 'Método', value: filtroAdicional1, onChange: setFiltroAdicional1, type: 'select', options: ['Transferencia', 'Tarjeta de Crédito', 'Débito', 'Efectivo'] },
         { label: 'Sucursal', value: filtroAdicional2, onChange: setFiltroAdicional2, type: 'select', options: Array.from({ length: 10 }, (_, i) => `Sucursal ${i + 1}`) },
         { label: 'Fecha pago', value: fechaInicio, onChange: setFechaInicio, type: 'date' }
-      ],
-      datos: [
-        [1, 1, '$195.76', '2024-04-09', 'Transferencia', 'Sucursal 5'],
-        [2, 2, '$379.85', '2024-04-01', 'Transferencia', 'Sucursal 1'],
       ]
     }
   };
 
   const reporte = reportes[tipo];
 
-  const datosFiltrados = reporte?.datos.filter((fila) => {
-    const fecha = fila.find(c => typeof c === 'string' && /^\d{4}-\d{2}-\d{2}/.test(c));
-    const incluyeFiltro = fila.some((c) =>
-      typeof c === 'string' && c.toLowerCase().includes(filtro.toLowerCase())
-    ) || fila[0].toString() === filtro;
+  // Función para cargar datos desde el backend cuando el componente se monta o cambia el tipo
+  useEffect(() => {
+    if (reporte) {
+      setCargando(true);
+      setError(null);
+      
+      // URL del backend, ajusta según tu entorno (desarrollo/producción)
+      const apiUrl = `http://${window.location.hostname}:3001${reporte.endpoint}`;
+      
+      fetch(apiUrl)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error(`Error al cargar datos: ${response.status}`);
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Convertir los datos del formato de objeto a matriz para compatibilidad con el código existente
+          const formattedData = data.map(item => {
+            // Extraer valores en el mismo orden que las columnas
+            return Object.values(item);
+          });
+          setDatos(formattedData);
+          setCargando(false);
+        })
+        .catch(err => {
+          console.error("Error al obtener datos:", err);
+          setError(err.message);
+          setCargando(false);
+          // Si hay un error, cargar datos de demostración para desarrollo
+          setDatos(getDatosDemostracion(tipo));
+        });
+    }
+  }, [tipo]);
 
-    const filtro1 = filtroAdicional1 === '' || fila.some(c => typeof c === 'string' && c.toLowerCase().includes(filtroAdicional1.toLowerCase()));
-    const filtro2 = filtroAdicional2 === '' || fila.some(c => typeof c === 'string' && c.includes(filtroAdicional2));
-    const dentroDeFechas = (!fechaInicio || (fecha && fecha >= fechaInicio)) &&
-                           (!fechaFin || (fecha && fecha <= fechaFin));
+  // Función para obtener datos de demostración en caso de error de conexión
+  const getDatosDemostracion = (tipo) => {
+    const demoDatos = {
+      reservas_usuario: [
+        [1, 'Usuario 164', 'Nissan Model X', '2024-01-13', '2024-01-18', '$442.85', 'Sucursal 2'],
+        [2, 'Usuario 36', 'Nissan Model Y', '2024-02-22', '2024-03-02', '$221.71', 'Sucursal 8'],
+      ],
+      mantenimiento: [
+        [1, 'XYZ0001', 'Nissan', 'Model X', 2013, 'Mantenimiento', 'Familiar', '$123.95'],
+        [2, 'XYZ0002', 'Nissan', 'Model Y', 2012, 'Mantenimiento', 'SUV', '$36.16'],
+      ],
+      alquileres: [
+        [1, 1, '2024-04-08', '2024-04-15', '$1030.90', 'Completado'],
+        [2, 2, '2024-07-13', '2024-07-16', '$961.72', 'Completado'],
+      ],
+      ingresos: [
+        [1, 1, '$195.76', '2024-04-09', 'Transferencia', 'Sucursal 5'],
+        [2, 2, '$379.85', '2024-04-01', 'Transferencia', 'Sucursal 1'],
+      ]
+    };
+    return demoDatos[tipo] || [];
+  };
 
+  const datosFiltrados = datos.filter((fila) => {
+    if (!fila || fila.length === 0) return false;
+    
+    const filaString = fila.map(c => c?.toString().toLowerCase() || '');
+    const searchText = filtro.toLowerCase();
+    
+    // Buscar por texto en cualquier columna o ID exacto
+    const incluyeFiltro = filaString.some(c => c.includes(searchText)) || 
+                         (fila[0]?.toString() === filtro);
+    
+    // Aplicar filtro adicional 1 (Estado/Método)
+    const filtro1 = filtroAdicional1 === '' || 
+                   filaString.some(c => c.includes(filtroAdicional1.toLowerCase()));
+    
+    // Aplicar filtro adicional 2 (Sucursal/Categoría)
+    const filtro2 = filtroAdicional2 === '' || 
+                   filaString.some(c => c.includes(filtroAdicional2.toLowerCase()));
+    
+    // Buscar fechas en la fila
+    const fechaColumnas = fila.filter(c => typeof c === 'string' && 
+                           /^\d{4}-\d{2}-\d{2}/.test(c));
+    
+    // Filtrar por rango de fechas si hay fechas en la fila
+    const dentroDeFechas = fechaColumnas.length === 0 || 
+                         fechaColumnas.some(fecha => 
+                         (!fechaInicio || fecha >= fechaInicio) && 
+                         (!fechaFin || fecha <= fechaFin));
+    
     return incluyeFiltro && filtro1 && filtro2 && dentroDeFechas;
   });
 
@@ -110,17 +176,34 @@ export default function Resultados() {
       startY: 25
     });
 
-    doc.save('informe.pdf');
+    doc.save(`informe_${tipo}_${new Date().toISOString().slice(0, 10)}.pdf`);
   };
 
   const datosGrafica = {
-    labels: datosFiltrados.map((fila) => fila[1]),
+    labels: datosFiltrados.map((fila, index) => {
+      // Para el eje X, usar una columna descriptiva o el índice
+      const posiblesLabels = [1, 2]; // índices de columnas que podrían ser buen label
+      const labelCol = posiblesLabels.find(i => fila[i] && typeof fila[i] === 'string') || 0;
+      return fila[labelCol]?.toString() || `Item ${index + 1}`;
+    }),
     datasets: [
       {
         label: 'Monto',
         data: datosFiltrados.map((fila) => {
-          const monto = fila.find(c => typeof c === 'string' && c.includes('$'));
-          return monto ? parseFloat(monto.replace('$', '')) : 1;
+          // Buscar columna con valores monetarios
+          const montoIndex = fila.findIndex(c => 
+            typeof c === 'string' && c.includes('$') ||
+            (typeof c === 'number' && c > 0)
+          );
+          
+          if (montoIndex >= 0) {
+            const valor = fila[montoIndex];
+            if (typeof valor === 'string' && valor.includes('$')) {
+              return parseFloat(valor.replace('$', '').replace(',', ''));
+            }
+            return parseFloat(valor);
+          }
+          return 0;
         }),
         backgroundColor: '#4e8c7b',
       }
@@ -138,6 +221,12 @@ export default function Resultados() {
   return (
     <div className={styles.autosContainer}>
       <h1 className={styles.autosTitle}>{reporte.titulo}</h1>
+      
+      {error && (
+        <div className={styles.errorMessage}>
+          Error: {error}. Mostrando datos de demostración.
+        </div>
+      )}
 
       <div className={styles.filtros}>
         {reporte.filtros.map((filtro, index) => (
@@ -191,33 +280,49 @@ export default function Resultados() {
         </button>
       </div>
 
-      <div className={`${styles.flipCard} ${verGrafica ? styles.flipped : ''}`}>
-        <div className={styles.flipInner}>
-          <div className={styles.flipFront}>
-            <table className={styles.tabla}>
-              <thead>
-                <tr>
-                  {reporte.columnas.map((col, i) => (
-                    <th key={i}>{col}</th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {datosFiltrados.map((fila, i) => (
-                  <tr key={i}>
-                    {fila.map((celda, j) => (
-                      <td key={j}>{celda}</td>
+      {cargando ? (
+        <div className={styles.loading}>Cargando datos...</div>
+      ) : (
+        <div className={`${styles.flipCard} ${verGrafica ? styles.flipped : ''}`}>
+          <div className={styles.flipInner}>
+            <div className={styles.flipFront}>
+              <table className={styles.tabla}>
+                <thead>
+                  <tr>
+                    {reporte.columnas.map((col, i) => (
+                      <th key={i}>{col}</th>
                     ))}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-          <div className={styles.flipBack}>
-            <Bar data={datosGrafica} />
+                </thead>
+                <tbody>
+                  {datosFiltrados.length > 0 ? (
+                    datosFiltrados.map((fila, i) => (
+                      <tr key={i}>
+                        {fila.map((celda, j) => (
+                          <td key={j}>{celda}</td>
+                        ))}
+                      </tr>
+                    ))
+                  ) : (
+                    <tr>
+                      <td colSpan={reporte.columnas.length} style={{ textAlign: 'center' }}>
+                        No hay datos disponibles
+                      </td>
+                    </tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+            <div className={styles.flipBack}>
+              {datosFiltrados.length > 0 ? (
+                <Bar data={datosGrafica} />
+              ) : (
+                <div className={styles.noData}>No hay datos para mostrar en la gráfica</div>
+              )}
+            </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }

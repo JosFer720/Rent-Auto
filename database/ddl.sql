@@ -127,28 +127,6 @@ AFTER UPDATE ON alquiler
 FOR EACH ROW
 EXECUTE FUNCTION liberar_vehiculo_al_devolver();
 
--- 3. No permitir reservas si el vehículo no está disponible
-CREATE OR REPLACE FUNCTION validar_vehiculo_disponible()
-RETURNS TRIGGER AS $$
-DECLARE
-    estado_actual VARCHAR(20);
-BEGIN
-    SELECT estado INTO estado_actual
-    FROM vehiculo
-    WHERE id_vehiculo = NEW.id_vehiculo;
-
-    IF estado_actual <> 'Disponible' THEN
-    RAISE EXCEPTION 'El vehículo no está disponible para reserva (estado: %)', estado_actual;
-    END IF;
-
-    RETURN NEW;
-END;
-$$ LANGUAGE plpgsql;
-
-CREATE TRIGGER trg_validar_reserva
-BEFORE INSERT ON reserva
-FOR EACH ROW
-EXECUTE FUNCTION validar_vehiculo_disponible();
 
 -- 4. Calcular el total automáticamente al insertar una reserva
 CREATE OR REPLACE FUNCTION calcular_total_reserva()
