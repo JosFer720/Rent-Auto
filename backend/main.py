@@ -27,6 +27,7 @@ def get_connection():
     except psycopg2.Error as e:
         raise HTTPException(status_code=500, detail=f"Error de conexión a la base de datos: {str(e)}")
 
+
 @app.get("/api/reservas")
 def get_reservas():
     conn = None
@@ -45,11 +46,13 @@ def get_reservas():
                 FROM reserva r
                 JOIN usuario u ON r.id_usuario = u.id_usuario
                 JOIN vehiculo v ON r.id_vehiculo = v.id_vehiculo
-                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
+                JOIN usuario_sucursal us ON u.id_usuario = us.id_usuario
+                JOIN sucursal s ON us.id_sucursal = s.id_sucursal
                 ORDER BY r.id_reserva
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
+        print("ERRO SQL EN /api/reservas:", e)
         raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
     finally:
         if conn:
@@ -115,7 +118,7 @@ def get_ingresos():
         conn = get_connection()
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute("""
-                SELECT
+                SELECT 
                     p.id_pago AS id,
                     p.id_alquiler,
                     p.monto,
@@ -125,8 +128,9 @@ def get_ingresos():
                 FROM pago p
                 JOIN alquiler a ON p.id_alquiler = a.id_alquiler
                 JOIN reserva r ON a.id_reserva = r.id_reserva
-                JOIN sucursal s ON r.id_sucursal = s.id_sucursal
-                ORDER BY p.id_pago
+                JOIN usuario_sucursal us ON r.id_usuario = us.id_usuario
+                JOIN sucursal s ON us.id_sucursal = s.id_sucursal
+                ORDER BY p.id_pago;
             """)
             return cur.fetchall()
     except psycopg2.Error as e:
@@ -135,6 +139,31 @@ def get_ingresos():
         if conn:
             conn.close()
 
+@app.get("/api/pagos")
+def get_pagos():
+    conn = None
+    try:
+        conn = get_connection()
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
+            cur.execute("""
+                SELECT 
+                    p.id_pago AS id,
+                    u.nombre AS cliente,
+                    p.monto,
+                    p.fecha_pago::date AS fecha_pago,
+                    p.metodo
+                FROM pago p
+                JOIN alquiler a ON p.id_alquiler = a.id_alquiler
+                JOIN reserva r ON a.id_reserva = r.id_reserva
+                JOIN usuario u ON r.id_usuario = u.id_usuario
+                ORDER BY p.id_pago;
+            """)
+            return cur.fetchall()
+    except psycopg2.Error as e:
+        raise HTTPException(status_code=500, detail=f"Error en la consulta SQL: {str(e)}")
+    finally:
+        if conn:
+            conn.close()
 
 @app.get("/health")
 def health_check():
